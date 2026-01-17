@@ -58,12 +58,29 @@ class MCTS {
         // Choose move with most visits (most robust)
         if (root.children.length === 0) {
             const moves = rootState.getValidMoves();
+            console.log('[MCTS] No children, random move');
             return moves[Math.floor(Math.random() * moves.length)];
         }
+
+        // Debug: Log all move evaluations
+        console.log(`[MCTS] Iterations: ${this.iterations}, Children: ${root.children.length}`);
+        const moveStats = root.children
+            .map(child => ({
+                move: child.move,
+                visits: child.visits,
+                wins: child.wins.toFixed(2),
+                winRate: (child.wins / child.visits * 100).toFixed(1) + '%',
+                ucb: child.ucb1().toFixed(3)
+            }))
+            .sort((a, b) => b.visits - a.visits);
+
+        console.table(moveStats);
 
         const bestChild = root.children.reduce((best, child) =>
             child.visits > best.visits ? child : best
         );
+
+        console.log(`[MCTS] Chosen move: Column ${bestChild.move} (${bestChild.visits} visits, ${(bestChild.wins / bestChild.visits * 100).toFixed(1)}% win rate)`);
 
         return bestChild.move;
     }
@@ -92,27 +109,41 @@ class MCTS {
     }
 
     simulate(state) {
+        let depth = 0;
         while (!state.gameOver) {
             const moves = state.getValidMoves();
             if (moves.length === 0) break;
 
             const randomMove = moves[Math.floor(Math.random() * moves.length)];
             state.makeMove(randomMove);
+            depth++;
         }
 
-        return state.winner;
+        return { winner: state.winner, depth: depth };
     }
 
-    backpropagate(node, winner, aiPlayer) {
+    backpropagate(node, result, aiPlayer) {
+        const winner = result.winner;
+        const depth = result.depth;
+
+        // Depth bonus: longer games get a small bonus (max ~0.2 extra)
+        // This makes AI prefer moves that delay losses and extend wins
+        const depthBonus = Math.min(depth / 50, 0.2);
+
         while (node !== null) {
             node.visits++;
 
             if (winner === aiPlayer) {
+                // Win: full point + small bonus for quick wins
                 node.wins += 1;
             } else if (winner !== null) {
-                node.wins -= 1; // Loss
+                // Loss: negative, but add depth bonus to prefer longer games
+                // A loss after 20 moves is "less bad" than a loss after 5 moves
+                node.wins += (-1 + depthBonus);
+            } else {
+                // Draw: neutral with small depth bonus
+                node.wins += depthBonus;
             }
-            // Draw = 0.5 could be added for more nuanced play
 
             node = node.parent;
         }

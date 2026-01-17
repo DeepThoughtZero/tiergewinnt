@@ -9,7 +9,7 @@ const ANIMALS = {
         name: 'Schnecke',
         emoji: '🐌',
         iterations: 50,
-        difficulty: 'Sehr Leicht',
+        difficulty: 'Anfänger',
         color: '#8B4513',
         description: 'Gemütlich und oft unaufmerksam',
         thinkingMessages: [
@@ -20,6 +20,23 @@ const ANIMALS = {
         winMessage: 'Oh! Ich hab gewonnen? Wie schön!',
         loseMessage: 'Das war trotzdem gemütlich!',
         drawMessage: 'Unentschieden ist auch nett!'
+    },
+    turtle: {
+        id: 'turtle',
+        name: 'Schildkröte',
+        emoji: '🐢',
+        iterations: 100,
+        difficulty: 'Sehr Leicht',
+        color: '#2E8B57',
+        description: 'Langsam aber bedacht',
+        thinkingMessages: [
+            '*zieht Kopf ein zum Nachdenken*',
+            'Eins nach dem anderen...',
+            'Gut Ding will Weile haben!'
+        ],
+        winMessage: 'Langsam aber sicher zum Sieg!',
+        loseMessage: 'Du warst schneller... diesmal!',
+        drawMessage: 'Geduld führt zu Ausgeglichenheit!'
     },
     rabbit: {
         id: 'rabbit',
@@ -38,6 +55,23 @@ const ANIMALS = {
         loseMessage: 'Nächstes Mal hüpf ich besser!',
         drawMessage: 'Hui, das war knapp!'
     },
+    cat: {
+        id: 'cat',
+        name: 'Katze',
+        emoji: '🐱',
+        iterations: 400,
+        difficulty: 'Leicht-Mittel',
+        color: '#FF8C00',
+        description: 'Verspielt aber aufmerksam',
+        thinkingMessages: [
+            '*schnurrt nachdenklich*',
+            'Miau... interessant!',
+            '*beobachtet das Spielfeld*'
+        ],
+        winMessage: 'Schnurr... das war zu einfach!',
+        loseMessage: '*gähnt* Du hattest Glück!',
+        drawMessage: 'Miau... noch eine Runde?'
+    },
     fox: {
         id: 'fox',
         name: 'Fuchs',
@@ -54,6 +88,23 @@ const ANIMALS = {
         winMessage: 'Der Klügere gewinnt! 🦊',
         loseMessage: 'Du bist schlauer als du aussiehst!',
         drawMessage: 'Ein würdiges Unentschieden!'
+    },
+    wolf: {
+        id: 'wolf',
+        name: 'Wolf',
+        emoji: '🐺',
+        iterations: 1200,
+        difficulty: 'Mittel-Schwer',
+        color: '#4B4B4B',
+        description: 'Strategisch und ausdauernd',
+        thinkingMessages: [
+            '*heult leise beim Denken*',
+            'Das Rudel rät mir...',
+            '*fixiert das Spielfeld*'
+        ],
+        winMessage: 'Das Rudel ist stark! Auuuu!',
+        loseMessage: 'Du bist ein würdiger Jäger!',
+        drawMessage: 'Wir respektieren uns gegenseitig!'
     },
     owl: {
         id: 'owl',

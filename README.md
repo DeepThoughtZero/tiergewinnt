@@ -1,4 +1,14 @@
-# Tiergewinnt 🎮
+# 🐾 Tier Gewinnt 🔴🟡 
+
+<div align="center">
+
+### 🚀 [HIER KLICKEN UND DIREKT LOSSPIELEN!](https://deepthoughtzero.github.io/tiergewinnt/) 🚀
+
+**Sofort im Browser starten** • **Keine Installation nötig** • **Einfach Link teilen**
+
+</div>
+
+---
 
 **Vier Gewinnt gegen kluge Tiere** - Ein klassisches Connect-Four-Spiel mit MCTS-basierter KI.
 
@@ -13,13 +23,16 @@
 
 | Tier | Schwierigkeit | MCTS Iterationen |
 |------|---------------|------------------|
-| 🐌 Schnecke | Sehr Leicht | 50 |
+| 🐌 Schnecke | Anfänger | 50 |
+| 🐢 Schildkröte | Sehr Leicht | 100 |
 | 🐰 Hase | Leicht | 200 |
+| 🐱 Katze | Leicht-Mittel | 400 |
 | 🦊 Fuchs | Mittel | 800 |
+| 🐺 Wolf | Mittel-Schwer | 1200 |
 | 🦉 Eule | Schwer | 2000 |
 | 🐉 Drache | Experte | 5000 |
 
-## Starten
+## Lokal starten
 
 Einfach `index.html` im Browser öffnen oder einen lokalen Server starten:
 
