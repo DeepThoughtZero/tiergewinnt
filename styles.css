@@ -1,0 +1,483 @@
+/**
+ * Vier Gewinnt - Tiergewinnt Styles
+ * Responsive design for PC, Tablet, and Mobile
+ */
+
+/* ===== CSS Variables ===== */
+:root {
+    --primary: #6366f1;
+    --primary-dark: #4f46e5;
+    --secondary: #0ea5e9;
+    --accent: #f59e0b;
+    --bg-dark: #0f172a;
+    --bg-card: #1e293b;
+    --text-light: #f8fafc;
+    --text-muted: #94a3b8;
+    --player-color: #fbbf24;
+    --ai-color: #ef4444;
+    --cell-bg: #334155;
+    --cell-empty: #1e293b;
+    --success: #22c55e;
+    --danger: #ef4444;
+    --glass: rgba(255, 255, 255, 0.1);
+    --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+/* ===== Reset & Base ===== */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Outfit', 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: linear-gradient(135deg, var(--bg-dark) 0%, #1a1a2e 50%, #16213e 100%);
+    color: var(--text-light);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* ===== Main Layout ===== */
+.app-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 1rem;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* ===== Header ===== */
+.header {
+    text-align: center;
+    padding: 1rem 0;
+}
+
+.header h1 {
+    font-size: 2.5rem;
+    margin: 0;
+    background: linear-gradient(135deg, var(--player-color), var(--accent), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 0 30px rgba(251, 191, 36, 0.3);
+}
+
+.header .subtitle {
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+    font-size: 1rem;
+}
+
+/* ===== Animal Selection ===== */
+.animal-selection {
+    background: var(--glass);
+    backdrop-filter: blur(10px);
+    border-radius: 1rem;
+    padding: 1.25rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.animal-selection h2 {
+    margin: 0 0 1rem 0;
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    text-align: center;
+}
+
+#animal-select {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.animal-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.75rem 1rem;
+    background: var(--bg-card);
+    border-radius: 0.75rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    min-width: 80px;
+}
+
+.animal-card:hover {
+    transform: translateY(-4px);
+    background: var(--cell-bg);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+}
+
+.animal-card.selected {
+    border-color: var(--primary);
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(14, 165, 233, 0.1));
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+}
+
+.animal-emoji {
+    font-size: 2rem;
+}
+
+.animal-name {
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.animal-difficulty {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+}
+
+/* ===== Animal Info ===== */
+#animal-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    margin-top: 1rem;
+    padding: 1rem;
+    background: var(--bg-card);
+    border-radius: 0.75rem;
+    min-height: 80px;
+}
+
+#animal-info:empty {
+    display: none;
+}
+
+.selected-emoji {
+    font-size: 2.5rem;
+}
+
+.selected-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.selected-desc {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+/* ===== Game Board ===== */
+.game-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+#game-board {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    padding: 1rem;
+    background: linear-gradient(145deg, #2563eb, #1d4ed8);
+    border-radius: 1rem;
+    box-shadow: var(--shadow), inset 0 2px 4px rgba(255, 255, 255, 0.1);
+    max-width: 560px;
+    width: 100%;
+}
+
+.board-column {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.board-column:hover {
+    transform: translateY(-2px);
+}
+
+.board-column.highlight .cell:first-child::before {
+    content: '▼';
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--player-color);
+    font-size: 0.8rem;
+    animation: bounce 0.5s infinite alternate;
+}
+
+@keyframes bounce {
+    to {
+        transform: translateX(-50%) translateY(3px);
+    }
+}
+
+.cell {
+    width: 60px;
+    height: 60px;
+    background: var(--cell-empty);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+.chip {
+    width: 85%;
+    height: 85%;
+    border-radius: 50%;
+    background: transparent;
+    transition: all 0.3s ease;
+}
+
+.chip.player {
+    background: radial-gradient(circle at 30% 30%, #fde047, var(--player-color), #d97706);
+    box-shadow: 0 4px 12px rgba(251, 191, 36, 0.5), inset 0 -3px 6px rgba(0, 0, 0, 0.3);
+}
+
+.chip.ai {
+    background: radial-gradient(circle at 30% 30%, #f87171, var(--ai-color), #b91c1c);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.5), inset 0 -3px 6px rgba(0, 0, 0, 0.3);
+}
+
+.chip.drop-animation {
+    animation: chipDrop 0.3s ease-out;
+}
+
+@keyframes chipDrop {
+    from {
+        transform: translateY(-300%);
+        opacity: 0.7;
+    }
+
+    70% {
+        transform: translateY(5%);
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.winning-cell {
+    animation: winPulse 0.6s infinite alternate;
+}
+
+@keyframes winPulse {
+    to {
+        box-shadow: 0 0 20px var(--success), inset 0 4px 8px rgba(0, 0, 0, 0.4);
+    }
+}
+
+/* ===== Status & Controls ===== */
+.game-status {
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: 600;
+    padding: 1rem;
+    background: var(--glass);
+    backdrop-filter: blur(10px);
+    border-radius: 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.game-status.win {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.3), rgba(22, 163, 74, 0.2));
+    border-color: var(--success);
+    animation: statusGlow 1s ease-out;
+}
+
+.game-status.lose {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(185, 28, 28, 0.2));
+    border-color: var(--danger);
+}
+
+.game-status.draw {
+    background: linear-gradient(135deg, rgba(14, 165, 233, 0.3), rgba(2, 132, 199, 0.2));
+    border-color: var(--secondary);
+}
+
+@keyframes statusGlow {
+
+    0%,
+    100% {
+        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+    }
+
+    50% {
+        box-shadow: 0 0 30px 10px rgba(34, 197, 94, 0.3);
+    }
+}
+
+#thinking-indicator {
+    text-align: center;
+    padding: 0.75rem;
+    font-style: italic;
+    color: var(--text-muted);
+    opacity: 0;
+    height: 40px;
+    transition: opacity 0.3s ease;
+}
+
+#thinking-indicator.visible {
+    opacity: 1;
+}
+
+.thinking-emoji {
+    display: inline-block;
+    animation: thinkBounce 0.5s infinite alternate;
+}
+
+@keyframes thinkBounce {
+    to {
+        transform: translateY(-3px) rotate(5deg);
+    }
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+#restart-btn {
+    padding: 0.875rem 2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    border: none;
+    border-radius: 0.75rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+}
+
+#restart-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+}
+
+#restart-btn:active {
+    transform: translateY(0);
+}
+
+/* ===== Responsive Design ===== */
+
+/* Tablet */
+@media (max-width: 768px) {
+    .header h1 {
+        font-size: 2rem;
+    }
+
+    #game-board {
+        gap: 6px;
+        padding: 0.75rem;
+    }
+
+    .animal-card {
+        padding: 0.6rem 0.8rem;
+        min-width: 70px;
+    }
+
+    .animal-emoji {
+        font-size: 1.75rem;
+    }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    .app-container {
+        padding: 0.75rem;
+        gap: 1rem;
+    }
+
+    .header h1 {
+        font-size: 1.6rem;
+    }
+
+    .header .subtitle {
+        font-size: 0.85rem;
+    }
+
+    .animal-selection {
+        padding: 1rem;
+    }
+
+    .animal-selection h2 {
+        font-size: 1rem;
+    }
+
+    #animal-select {
+        gap: 0.5rem;
+    }
+
+    .animal-card {
+        padding: 0.5rem 0.6rem;
+        min-width: 60px;
+        border-radius: 0.5rem;
+    }
+
+    .animal-emoji {
+        font-size: 1.5rem;
+    }
+
+    .animal-name {
+        font-size: 0.7rem;
+    }
+
+    .animal-difficulty {
+        font-size: 0.6rem;
+    }
+
+    #game-board {
+        gap: 3px;
+        padding: 0.5rem;
+        border-radius: 0.75rem;
+    }
+
+    .board-column {
+        gap: 3px;
+    }
+
+    .cell {
+        width: 42px;
+        height: 42px;
+    }
+
+    .game-status {
+        font-size: 1rem;
+        padding: 0.75rem;
+    }
+
+    #restart-btn {
+        padding: 0.75rem 1.5rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* ===== Utility ===== */
+@media (hover: none) {
+    .board-column:hover {
+        transform: none;
+    }
+
+    .animal-card:hover {
+        transform: none;
+    }
+}

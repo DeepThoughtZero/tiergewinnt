@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="description" content="Vier Gewinnt gegen süße Tier-Gegner mit unterschiedlicher KI-Stärke">
+    <meta name="theme-color" content="#0f172a">
+    <title>Tiergewinnt - Vier Gewinnt gegen Tiere</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <h1>🎮 Tier Gewinnt</h1>
+            <p class="subtitle">Vier Gewinnt gegen kluge Tiere</p>
+        </header>
+
+        <!-- Animal Selection -->
+        <section class="animal-selection">
+            <h2>Wähle deinen Gegner</h2>
+            <div id="animal-select"></div>
+            <div id="animal-info"></div>
+        </section>
+
+        <!-- Game Area -->
+        <main class="game-area">
+            <!-- Status -->
+            <div id="game-status" class="game-status">
+                Wähle ein Tier, um zu starten!
+            </div>
+
+            <!-- Thinking Indicator -->
+            <div id="thinking-indicator"></div>
+
+            <!-- Game Board -->
+            <div id="game-board"></div>
+
+            <!-- Controls -->
+            <div class="controls">
+                <button id="restart-btn">🔄 Neues Spiel</button>
+            </div>
+        </main>
+    </div>
+
+    <!-- JavaScript Modules -->
+    <script src="js/game.js"></script>
+    <script src="js/mcts.js"></script>
+    <script src="js/animals.js"></script>
+    <script src="js/ui.js"></script>
+</body>
+
+</html>
