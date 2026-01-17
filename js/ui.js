@@ -9,7 +9,9 @@ class GameUI {
         this.ai = null;
         this.currentAnimal = null;
         this.isAIThinking = false;
+        this.isAIThinking = false;
         this.animationInProgress = false;
+        this.lastAiMessage = '';
 
         this.initElements();
         this.initEventListeners();
@@ -176,7 +178,8 @@ class GameUI {
 
         this.game.reset();
         this.renderBoard();
-        this.updateStatus('Dein Zug! Klicke auf eine Spalte.');
+        this.renderBoard();
+        this.updateStatus('Dein Zug! Klicke auf eine Spalte.', 'start');
     }
 
     renderBoard() {
@@ -300,7 +303,11 @@ class GameUI {
     async makeAIMove() {
         this.isAIThinking = true;
         this.showThinking(true);
-        this.updateStatus(getThinkingMessage(this.currentAnimal.id));
+        this.isAIThinking = true;
+        this.showThinking(true);
+        // Store and show message
+        this.lastAiMessage = getThinkingMessage(this.currentAnimal.id);
+        this.updateStatus(this.lastAiMessage, 'ai');
 
         // Small delay to show thinking message
         await new Promise(resolve => setTimeout(resolve, 500));
@@ -316,7 +323,7 @@ class GameUI {
             if (this.game.gameOver) {
                 this.handleGameEnd();
             } else {
-                this.updateStatus('Dein Zug!');
+                this.updateStatus('Dein Zug!', 'player');
             }
         }
 
@@ -413,8 +420,21 @@ class GameUI {
         return line;
     }
 
-    updateStatus(message) {
-        this.statusEl.textContent = message;
+    updateStatus(message, type = 'standard') {
+        if (type === 'player' && this.lastAiMessage) {
+            // Zeige AI Nachricht UND Dein Zug
+            this.statusEl.innerHTML = `
+                <div style="font-weight: normal; font-size: 0.9em; opacity: 0.8; margin-bottom: 4px;">${this.lastAiMessage}</div>
+                <div style="font-weight: bold; font-size: 1.1em; color: var(--accent-color, #fbbf24); border-top: 1px solid rgba(255,255,255,0.1); padding-top: 4px;">Dein Zug!</div>
+            `;
+            // Entferne evtl. spezielle AI-Styling Klassen wenn nötig, aber behalte Basis-Layout
+        } else if (type === 'ai') {
+            // Nur AI Nachricht
+            this.statusEl.textContent = message;
+        } else {
+            // Standard Verhalten (Start, Ende, etc.)
+            this.statusEl.textContent = message;
+        }
     }
 }
 
