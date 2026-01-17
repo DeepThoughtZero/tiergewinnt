@@ -15,6 +15,7 @@ class GameUI {
 
         this.initElements();
         this.initEventListeners();
+        this.initLeaderboardListeners();
         this.renderAnimalSelection();
     }
 
@@ -26,10 +27,20 @@ class GameUI {
         this.restartBtn = document.getElementById('restart-btn');
         this.thinkingEl = document.getElementById('thinking-indicator');
         this.dropZoneEl = document.getElementById('drop-zone');
+        this.dropZoneEl = document.getElementById('drop-zone');
         this.muteBtn = document.getElementById('mute-btn');
+        this.leaderboardBtn = document.getElementById('leaderboard-btn');
 
         // Initialize sound manager
         this.sounds = new SoundManager();
+
+        // Leaderboard elements
+        this.leaderboardModal = document.getElementById('leaderboard-modal');
+        this.closeLeaderboardBtn = document.getElementById('close-leaderboard');
+        this.saveScoreBtn = document.getElementById('save-score-btn');
+        this.playerNameInput = document.getElementById('player-name-input');
+        this.nameInputSection = document.getElementById('name-input-section');
+        this.gameStatusEl = document.getElementById('game-status');
     }
 
     // Calculate column position for drop animation
@@ -116,7 +127,13 @@ class GameUI {
         this.muteBtn.addEventListener('click', () => {
             const isMuted = this.sounds.toggleMute();
             this.muteBtn.textContent = isMuted ? '🔇' : '🔊';
+            this.muteBtn.textContent = isMuted ? '🔇' : '🔊';
             if (!isMuted) this.sounds.playClick();
+        });
+
+        this.leaderboardBtn.addEventListener('click', () => {
+            this.sounds.playClick();
+            this.openLeaderboard(false); // False = View mode, no input
         });
 
         // Initialize audio context on first user interaction
@@ -129,6 +146,68 @@ class GameUI {
                 this.handleColumnClick(parseInt(e.key) - 1);
             }
         });
+    }
+
+    initLeaderboardListeners() {
+        this.closeLeaderboardBtn.addEventListener('click', () => this.closeLeaderboard());
+
+        // Close on background click
+        this.leaderboardModal.addEventListener('click', (e) => {
+            if (e.target === this.leaderboardModal) this.closeLeaderboard();
+        });
+
+        this.saveScoreBtn.addEventListener('click', () => this.submitScore());
+    }
+
+    async submitScore() {
+        const name = this.playerNameInput.value.trim();
+        if (!name) {
+            alert('Bitte gib einen Namen ein!');
+            return;
+        }
+
+        const score = this.currentWinData.score;
+        const moves = this.currentWinData.moves;
+        const difficulty = this.currentWinData.difficulty;
+
+        // Disable button to prevent double submit
+        this.saveScoreBtn.disabled = true;
+        this.saveScoreBtn.textContent = 'Speichere...';
+
+        const success = await saveHighscore(name, score, moves, difficulty);
+
+        if (success) {
+            // Hide input, reload list
+            this.nameInputSection.classList.add('hidden');
+            const entries = await loadLeaderboard();
+            renderLeaderboard(entries);
+        } else {
+            alert('Fehler beim Speichern. Bitte versuche es noch einmal.');
+            this.saveScoreBtn.disabled = false;
+            this.saveScoreBtn.textContent = 'Speichere';
+        }
+    }
+
+    openLeaderboard(showInput = false) {
+        this.leaderboardModal.classList.add('visible');
+
+        // Always load fresh data when opening
+        loadLeaderboard().then(entries => renderLeaderboard(entries));
+
+        if (showInput) {
+            this.nameInputSection.classList.remove('hidden');
+            this.playerNameInput.value = ''; // Reset input
+            this.saveScoreBtn.disabled = false;
+            this.saveScoreBtn.textContent = 'Speichern';
+            document.getElementById('score-calculation').style.display = 'flex';
+        } else {
+            this.nameInputSection.classList.add('hidden');
+            document.getElementById('score-calculation').style.display = 'none';
+        }
+    }
+
+    closeLeaderboard() {
+        this.leaderboardModal.classList.remove('visible');
     }
 
     renderAnimalSelection() {
@@ -354,6 +433,9 @@ class GameUI {
             message = `🎉 Du hast gewonnen! ${this.currentAnimal.loseMessage}`;
             statusClass = 'win';
             this.sounds.playWin();
+
+            // Handle Leaderboard
+            setTimeout(() => this.handleWin(), 1500); // Wait for sound/animation
         } else if (this.game.winner === this.game.AI) {
             message = `${this.currentAnimal.emoji} ${this.currentAnimal.winMessage}`;
             statusClass = 'lose';
@@ -435,6 +517,48 @@ class GameUI {
             // Standard Verhalten (Start, Ende, etc.)
             this.statusEl.textContent = message;
         }
+    }
+
+
+    handleWin() {
+        const moves = this.game.moveCount;
+        const playerMoves = Math.ceil(moves / 2);
+
+        // Base scores based on difficulty
+        const ANIMAL_SCORES = {
+            'snail': 10,
+            'turtle': 20,
+            'rabbit': 30,
+            'cat': 40,
+            'fox': 60,
+            'wolf': 80,
+            'owl': 100,
+            'dragon': 150
+        };
+
+        const animalBaseScore = ANIMAL_SCORES[this.currentAnimal.id] || 10;
+
+        // Bonus for speed (max 20 points bonus)
+        // Max moves on board is 42 (21 per player). 
+        // Fast win (e.g. 4 moves) => 20 - 4 = 16 bonus.
+        // Slow win (20 moves) => 20 - 20 = 0 bonus.
+        const moveBonus = Math.max(0, 20 - playerMoves);
+
+        const score = animalBaseScore + moveBonus;
+
+        // Use animal name as difficulty label (e.g. "Fuchs")
+        const difficultyLabel = this.currentAnimal.name;
+
+        this.currentWinData = { score, moves: playerMoves, difficulty: difficultyLabel };
+
+        // Detail string for UI
+        const calcDetails = `Basis (${this.currentAnimal.name}): ${animalBaseScore} + Zügebonus: ${moveBonus}`;
+
+        // Show Visualizer with details
+        showScoreVisualization(difficultyLabel, playerMoves, score, calcDetails);
+
+        // Open Modal with Input
+        this.openLeaderboard(true);
     }
 }
 
