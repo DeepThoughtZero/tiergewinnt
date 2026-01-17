@@ -23,6 +23,78 @@ class GameUI {
         this.animalInfoEl = document.getElementById('animal-info');
         this.restartBtn = document.getElementById('restart-btn');
         this.thinkingEl = document.getElementById('thinking-indicator');
+        this.dropZoneEl = document.getElementById('drop-zone');
+    }
+
+    // Calculate column position for drop animation
+    getColumnPosition(col) {
+        const boardRect = this.boardEl.getBoundingClientRect();
+        const colEl = this.boardEl.children[col];
+        if (!colEl) return 0;
+        const colRect = colEl.getBoundingClientRect();
+        return colRect.left - boardRect.left + colRect.width / 2;
+    }
+
+    // Create the dropping animal element
+    createDropAnimal(col, type, emoji) {
+        const dropAnimal = document.createElement('div');
+        dropAnimal.className = 'drop-animal';
+
+        const position = this.getColumnPosition(col);
+        dropAnimal.style.left = `${position}px`;
+        dropAnimal.style.transform = 'translateX(-50%)';
+
+        dropAnimal.innerHTML = `
+            <span class="animal-dropper">${emoji}</span>
+            <div class="held-chip ${type}"></div>
+        `;
+
+        this.dropZoneEl.appendChild(dropAnimal);
+        return dropAnimal;
+    }
+
+    // Animate the funny drop sequence
+    async animateFunnyDrop(col, type) {
+        const isPlayer = type === 'player';
+        const emoji = isPlayer ? '🖐️' : (this.currentAnimal?.emoji || '🎮');
+
+        const dropAnimal = this.createDropAnimal(col, type, emoji);
+
+        // 1. Appear with wobble
+        dropAnimal.classList.add('appear');
+        await new Promise(r => setTimeout(r, 400));
+        dropAnimal.classList.remove('appear');
+
+        // 2. Throwing motion
+        dropAnimal.classList.add('throwing');
+        await new Promise(r => setTimeout(r, 300));
+
+        // 3. Drop the chip
+        dropAnimal.classList.add('dropping');
+        dropAnimal.classList.remove('throwing');
+        await new Promise(r => setTimeout(r, 150));
+
+        // Hide the held chip so it doesn't reappear
+        const heldChip = dropAnimal.querySelector('.held-chip');
+        if (heldChip) heldChip.style.visibility = 'hidden';
+
+        // Return early - chip animation will handle the board update
+        return dropAnimal;
+    }
+
+    // Show happy dance after successful drop
+    async showHappyReaction(dropAnimal) {
+        dropAnimal.classList.remove('dropping');
+        dropAnimal.classList.add('happy');
+        await new Promise(r => setTimeout(r, 600));
+    }
+
+    // Remove the drop animal with exit animation
+    async removeDropAnimal(dropAnimal) {
+        dropAnimal.classList.remove('happy', 'dropping', 'throwing');
+        dropAnimal.classList.add('exit');
+        await new Promise(r => setTimeout(r, 300));
+        dropAnimal.remove();
     }
 
     initEventListeners() {
@@ -163,11 +235,20 @@ class GameUI {
             targetRow++;
         }
 
+        // Start the funny animal/hand drop animation
+        const dropAnimal = await this.animateFunnyDrop(col, type);
+
         // Make the move in game state
         this.game.makeMove(col);
 
-        // Animate the chip drop
+        // Animate the chip appearing in the board
         await this.animateChipDrop(col, targetRow, type);
+
+        // Show happy reaction
+        await this.showHappyReaction(dropAnimal);
+
+        // Remove the animal/hand
+        await this.removeDropAnimal(dropAnimal);
 
         this.animationInProgress = false;
     }

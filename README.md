@@ -14,23 +14,25 @@
 
 ## Features
 
-- 🎯 **5 Tier-Gegner** mit unterschiedlicher Spielstärke (MCTS-Iterationen)
+- 🎯 **8 Tier-Gegner** mit unterschiedlicher Spielstärke
 - 📱 **Responsive Design** für PC, Tablet und Handy
-- 🎨 **Modernes UI** mit Glasmorphism-Design und Animationen
-- 🧠 **Monte Carlo Tree Search** für intelligente KI-Züge
+- 🎨 **Modernes UI** mit Glasmorphism-Design
+- ✨ **Lustige Animationen** - Tiere lassen Chips fallen und jubeln bei Sieg
+- 🥋 **AI Dojo** - Trainiere und beobachte KI gegen KI
+- 🧠 **Smart AI** - Monte Carlo Tree Search (MCTS) & Minimax mit Alpha-Beta Pruning
 
 ## Tier-Gegner
 
-| Tier | Schwierigkeit | MCTS Iterationen |
-|------|---------------|------------------|
-| 🐌 Schnecke | Gemütlich | 50 |
-| 🐢 Schildkröte | Bedächtig | 100 |
-| 🐰 Hase | Voreilig | 200 |
-| 🐱 Katze | Verspielt | 400 |
-| 🦊 Fuchs | Schlau | 800 |
-| 🐺 Wolf | Gerissen | 1200 |
-| 🦉 Eule | Weise | 2000 |
-| 🐉 Drache | Unbesiegbar | 5000 |
+| Tier | Schwierigkeit | KI Strategie |
+|------|---------------|--------------|
+| 🐌 Schnecke | Gemütlich | MCTS (50 Iterationen) |
+| 🐢 Schildkröte | Bedächtig | MCTS (100 Iterationen) |
+| 🐰 Hase | Voreilig | MCTS (200 Iterationen) |
+| 🐱 Katze | Verspielt | MCTS (500 Iterationen) |
+| 🦊 Fuchs | Schlau | AB-Pruning (Tiefe 4) |
+| 🐺 Wolf | Gerissen | AB-Pruning (Tiefe 6) |
+| 🦉 Eule | Weise | AB-Pruning (Tiefe 8) |
+| 🐉 Drache | Unbesiegbar | AB-Pruning (Tiefe 10) |
 
 ## Lokal starten
 
@@ -41,19 +43,7 @@ python3 -m http.server 8080
 # Dann im Browser: http://localhost:8080
 ```
 
-## Dateien
-
-```
-tiergewinnt/
-├── index.html       # Hauptdatei
-├── styles.css       # Responsive CSS
-├── js/
-│   ├── game.js      # Spiellogik & Win-Detection
-│   ├── mcts.js      # MCTS AI Engine
-│   ├── animals.js   # Tier-Definitionen
-│   └── ui.js        # UI Controller
-└── README.md
-```
+> 🥋 **Tipp:** Besuche das `dojo.html` (z.B. http://localhost:8080/dojo.html) um die KIs gegeneinander antreten zu lassen!
 
 ## Spielanleitung
 
@@ -66,3 +56,4 @@ tiergewinnt/
 - Vanilla JavaScript (ES6)
 - CSS Grid & Flexbox
 - Monte Carlo Tree Search (MCTS) mit UCB1
+- Minimax Algorithmus mit Alpha-Beta Pruning
