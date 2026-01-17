@@ -6,7 +6,7 @@
 class GameUI {
     constructor() {
         this.game = new GameState();
-        this.mcts = null;
+        this.ai = null;
         this.currentAnimal = null;
         this.isAIThinking = false;
         this.animationInProgress = false;
@@ -56,7 +56,7 @@ class GameUI {
 
     selectAnimal(animalId) {
         this.currentAnimal = getAnimal(animalId);
-        this.mcts = new MCTS(this.currentAnimal.iterations);
+        this.ai = createAI(animalId);
 
         // Update UI
         document.querySelectorAll('.animal-card').forEach(card => {
@@ -216,7 +216,7 @@ class GameUI {
         // Use setTimeout to run MCTS without blocking UI
         return new Promise(resolve => {
             setTimeout(() => {
-                const move = this.mcts.findBestMove(this.game);
+                const move = this.ai.findBestMove(this.game);
                 resolve(move);
             }, 10);
         });

@@ -1,6 +1,6 @@
-# 🐾 Tier Gewinnt 🔴🟡 
-
 <div align="center">
+
+# 🐾 Tier Gewinnt 🔴🟡
 
 ### 🚀 [HIER KLICKEN UND DIREKT LOSSPIELEN!](https://deepthoughtzero.github.io/tiergewinnt/) 🚀
 
@@ -23,14 +23,14 @@
 
 | Tier | Schwierigkeit | MCTS Iterationen |
 |------|---------------|------------------|
-| 🐌 Schnecke | Anfänger | 50 |
-| 🐢 Schildkröte | Sehr Leicht | 100 |
-| 🐰 Hase | Leicht | 200 |
-| 🐱 Katze | Leicht-Mittel | 400 |
-| 🦊 Fuchs | Mittel | 800 |
-| 🐺 Wolf | Mittel-Schwer | 1200 |
-| 🦉 Eule | Schwer | 2000 |
-| 🐉 Drache | Experte | 5000 |
+| 🐌 Schnecke | Gemütlich | 50 |
+| 🐢 Schildkröte | Bedächtig | 100 |
+| 🐰 Hase | Voreilig | 200 |
+| 🐱 Katze | Verspielt | 400 |
+| 🦊 Fuchs | Schlau | 800 |
+| 🐺 Wolf | Gerissen | 1200 |
+| 🦉 Eule | Weise | 2000 |
+| 🐉 Drache | Unbesiegbar | 5000 |
 
 ## Lokal starten
 

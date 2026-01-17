@@ -42,6 +42,33 @@ class MCTS {
 
     findBestMove(gameState) {
         const rootState = gameState.clone();
+        const validMoves = rootState.getValidMoves();
+
+        // IMMEDIATE THREAT DETECTION - Before MCTS
+        // 1. Can we win immediately?
+        for (const move of validMoves) {
+            const testState = rootState.clone();
+            testState.makeMove(move);
+            if (testState.winner === rootState.currentPlayer) {
+                console.log(`[MCTS] Winning move found: Column ${move}`);
+                return move;
+            }
+        }
+
+        // 2. Must we block opponent's winning move?
+        const opponent = rootState.currentPlayer === 1 ? 2 : 1;
+        for (const move of validMoves) {
+            const testState = rootState.clone();
+            // Temporarily switch to opponent to test their win
+            testState.currentPlayer = opponent;
+            testState.makeMove(move);
+            if (testState.winner === opponent) {
+                console.log(`[MCTS] Must block column ${move} (opponent would win)`);
+                return move;
+            }
+        }
+
+        // No immediate threats - run full MCTS
         const root = new MCTSNode(rootState);
 
         for (let i = 0; i < this.iterations; i++) {
