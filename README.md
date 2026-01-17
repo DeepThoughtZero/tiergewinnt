@@ -18,6 +18,7 @@
 - 📱 **Responsive Design** für PC, Tablet und Handy
 - 🎨 **Modernes UI** mit Glasmorphism-Design
 - ✨ **Lustige Animationen** - Tiere lassen Chips fallen und jubeln bei Sieg
+- 🔊 **Sound-Effekte** - Prozedurale Sounds für Chip-Einwurf und Spielende
 - 🥋 **AI Dojo** - Trainiere und beobachte KI gegen KI
 - 🧠 **Smart AI** - Monte Carlo Tree Search (MCTS) & Minimax mit Alpha-Beta Pruning
 
@@ -55,5 +56,6 @@ python3 -m http.server 8080
 
 - Vanilla JavaScript (ES6)
 - CSS Grid & Flexbox
+- Web Audio API (Prozedurale Sounds)
 - Monte Carlo Tree Search (MCTS) mit UCB1
 - Minimax Algorithmus mit Alpha-Beta Pruning

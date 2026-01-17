@@ -24,6 +24,10 @@ class GameUI {
         this.restartBtn = document.getElementById('restart-btn');
         this.thinkingEl = document.getElementById('thinking-indicator');
         this.dropZoneEl = document.getElementById('drop-zone');
+        this.muteBtn = document.getElementById('mute-btn');
+
+        // Initialize sound manager
+        this.sounds = new SoundManager();
     }
 
     // Calculate column position for drop animation
@@ -71,6 +75,10 @@ class GameUI {
 
         // 3. Drop the chip
         dropAnimal.classList.add('dropping');
+
+        // Play drop sound
+        this.sounds.playDrop();
+
         dropAnimal.classList.remove('throwing');
         await new Promise(r => setTimeout(r, 150));
 
@@ -98,10 +106,23 @@ class GameUI {
     }
 
     initEventListeners() {
-        this.restartBtn.addEventListener('click', () => this.restartGame());
+        this.restartBtn.addEventListener('click', () => {
+            this.sounds.playClick();
+            this.restartGame();
+        });
+
+        this.muteBtn.addEventListener('click', () => {
+            const isMuted = this.sounds.toggleMute();
+            this.muteBtn.textContent = isMuted ? '🔇' : '🔊';
+            if (!isMuted) this.sounds.playClick();
+        });
+
+        // Initialize audio context on first user interaction
+        document.addEventListener('click', () => this.sounds.init(), { once: true });
 
         // Keyboard support
         document.addEventListener('keydown', (e) => {
+            this.sounds.init();
             if (e.key >= '1' && e.key <= '7') {
                 this.handleColumnClick(parseInt(e.key) - 1);
             }
@@ -121,7 +142,10 @@ class GameUI {
                 <span class="animal-name">${animal.name}</span>
                 <span class="animal-difficulty">${animal.difficulty}</span>
             `;
-            card.addEventListener('click', () => this.selectAnimal(animal.id));
+            card.addEventListener('click', () => {
+                this.sounds.playClick();
+                this.selectAnimal(animal.id);
+            });
             this.animalSelectEl.appendChild(card);
         });
     }
@@ -201,6 +225,9 @@ class GameUI {
     }
 
     async handleColumnClick(col) {
+        // Initialize sound on move attempt
+        this.sounds.init();
+
         if (!this.currentAnimal || this.game.gameOver || this.isAIThinking || this.animationInProgress) {
             return;
         }
@@ -243,6 +270,9 @@ class GameUI {
 
         // Animate the chip appearing in the board
         await this.animateChipDrop(col, targetRow, type);
+
+        // Play impact sound
+        this.sounds.playChipImpact();
 
         // Show happy reaction
         await this.showHappyReaction(dropAnimal);
@@ -316,12 +346,15 @@ class GameUI {
         if (this.game.winner === this.game.PLAYER) {
             message = `🎉 Du hast gewonnen! ${this.currentAnimal.loseMessage}`;
             statusClass = 'win';
+            this.sounds.playWin();
         } else if (this.game.winner === this.game.AI) {
             message = `${this.currentAnimal.emoji} ${this.currentAnimal.winMessage}`;
             statusClass = 'lose';
+            this.sounds.playLose();
         } else {
             message = `🤝 Unentschieden! ${this.currentAnimal.drawMessage}`;
             statusClass = 'draw';
+            this.sounds.playDraw();
         }
 
         this.statusEl.className = 'game-status ' + statusClass;
