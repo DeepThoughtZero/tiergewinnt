@@ -10,7 +10,7 @@
 
 ---
 
-**Vier Gewinnt gegen kluge Tiere** - Ein klassisches Connect-Four-Spiel mit MCTS-basierter KI.
+**Vier Gewinnt gegen kluge Tiere** - Ein klassisches Connect-Four-Spiel mit KI (MCTS & Alpha-Beta).
 
 ## Features
 
@@ -26,7 +26,7 @@
 
 | Tier | Schwierigkeit | KI Strategie |
 |------|---------------|--------------|
-| 🐌 Schnecke | Gemütlich | MCTS (50 Iterationen) |
+| 🐌 Schnecke | Gemütlich | MCTS (10 Iterationen) |
 | 🐢 Schildkröte | Bedächtig | MCTS (100 Iterationen) |
 | 🐰 Hase | Voreilig | MCTS (200 Iterationen) |
 | 🐱 Katze | Verspielt | MCTS (500 Iterationen) |

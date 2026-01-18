@@ -9,7 +9,7 @@ const ANIMALS = {
         name: 'Schnecke',
         emoji: '🐌',
         algorithm: 'mcts',
-        iterations: 50,
+        iterations: 10,
         difficulty: 'Gemütlich',
         color: '#8B4513',
         description: 'Gemütlich und oft unaufmerksam',

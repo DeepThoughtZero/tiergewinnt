@@ -242,6 +242,37 @@
             padding: 10px;
             color: #888;
         }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .battle-config {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .arena {
+                grid-template-columns: 1fr;
+            }
+
+            .board-container {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .subtitle {
+                font-size: 0.9rem;
+            }
+
+            .mini-cell {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 
@@ -254,11 +285,11 @@
             <div class="fighter-select">
                 <h3>🟡 Kämpfer 1 (Gelb)</h3>
                 <select id="fighter1">
-                    <option value="snail">🐌 Schnecke (MCTS 50)</option>
+                    <option value="snail" selected>🐌 Schnecke (MCTS 50)</option>
                     <option value="turtle">🐢 Schildkröte (MCTS 100)</option>
                     <option value="rabbit">🐰 Hase (MCTS 200)</option>
                     <option value="cat">🐱 Katze (MCTS 500)</option>
-                    <option value="fox" selected>🦊 Fuchs (AB Tiefe 4)</option>
+                    <option value="fox">🦊 Fuchs (AB Tiefe 4)</option>
                     <option value="wolf">🐺 Wolf (AB Tiefe 6)</option>
                     <option value="owl">🦉 Eule (AB Tiefe 8)</option>
                     <option value="dragon">🐉 Drache (AB Tiefe 10)</option>
@@ -269,13 +300,13 @@
                 <h3>🔴 Kämpfer 2 (Rot)</h3>
                 <select id="fighter2">
                     <option value="snail">🐌 Schnecke (MCTS 50)</option>
-                    <option value="turtle">🐢 Schildkröte (MCTS 100)</option>
+                    <option value="turtle" selected>🐢 Schildkröte (MCTS 100)</option>
                     <option value="rabbit">🐰 Hase (MCTS 200)</option>
                     <option value="cat">🐱 Katze (MCTS 500)</option>
                     <option value="fox">🦊 Fuchs (AB Tiefe 4)</option>
                     <option value="wolf">🐺 Wolf (AB Tiefe 6)</option>
                     <option value="owl">🦉 Eule (AB Tiefe 8)</option>
-                    <option value="dragon" selected>🐉 Drache (AB Tiefe 10)</option>
+                    <option value="dragon">🐉 Drache (AB Tiefe 10)</option>
                 </select>
             </div>
         </div>

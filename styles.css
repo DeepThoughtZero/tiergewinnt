@@ -910,24 +910,20 @@ body {
 }
 
 /* Ränge einfärben */
-.rank-1 {
-    color: #f59e0b;
+.rank-1, .rank-2, .rank-3 {
     font-weight: bold;
 }
 
-/* Gold */
-.rank-2 {
-    color: #9ca3af;
-    font-weight: bold;
-}
+.rank-1 { color: #f59e0b; } /* Gold */
+.rank-2 { color: #9ca3af; } /* Silber */
+.rank-3 { color: #b45309; } /* Bronze - korrigiert */
 
-/* Silber */
-.rank-3 {
-    color: #d97706;
-    font-weight: bold;
+/* Ensure rank and medal stay on one line */
+.leaderboard-table td:first-child {
+    white-space: nowrap;
+    min-width: 60px;
+    text-align: left;
 }
-
-/* Bronze */
 
 /* Name Input Styles inside Modal */
 .name-input-container {

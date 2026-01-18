@@ -103,6 +103,25 @@ function escapeHtml(text) {
 }
 
 /**
+ * Helper to get animal emoji by name
+ * @param {string} name 
+ */
+function getAnimalEmoji(name) {
+    // Assuming ANIMALS object is available globally from animals.js
+    if (typeof ANIMALS !== 'undefined') {
+        const animal = Object.values(ANIMALS).find(a => a.name === name);
+        if (animal) return animal.emoji;
+    }
+    // Fallback mapping if ANIMALS is not available or name not found
+    const map = {
+        'Schnecke': '🐌', 'Schildkröte': '🐢', 'Hase': '🐰',
+        'Katze': '🐱', 'Fuchs': '🦊', 'Wolf': '🐺',
+        'Eule': '🦉', 'Drache': '🐉'
+    };
+    return map[name] || name;
+}
+
+/**
  * Render the leaderboard table
  * @param {Array} entries - Leaderboard entries
  */
@@ -110,37 +129,57 @@ function renderLeaderboard(entries) {
     const tbody = document.getElementById('leaderboard-body');
     if (!tbody) return;
 
-    // Limit to top 10 for display cleanliness
-    const topEntries = entries.slice(0, 10);
+    // Show up to 100 entries (scrolling handled by CSS)
+    const topEntries = entries.slice(0, 100);
 
     tbody.innerHTML = topEntries.map((entry, index) => {
         const rank = index + 1;
+
+        let rankDisplay = rank;
         let rankClass = '';
-        if (rank === 1) rankClass = 'rank-1';
-        else if (rank === 2) rankClass = 'rank-2';
-        else if (rank === 3) rankClass = 'rank-3';
+
+        if (rank === 1) {
+            rankDisplay = `🥇 ${rank}`;
+            rankClass = 'rank-1';
+        } else if (rank === 2) {
+            rankDisplay = `🥈 ${rank}`;
+            rankClass = 'rank-2';
+        } else if (rank === 3) {
+            rankDisplay = `🥉 ${rank}`;
+            rankClass = 'rank-3';
+        }
 
         // Format date if available (assuming ISO or similar string)
         let dateStr = entry.date || '';
         try {
             if (dateStr) {
                 const d = new Date(dateStr);
-                dateStr = d.toLocaleDateString('de-DE');
+                dateStr = d.toLocaleDateString('de-DE', {
+                    day: 'numeric', month: 'numeric', year: 'numeric',
+                    hour: '2-digit', minute: '2-digit'
+                });
             }
         } catch (e) { /* ignore date parsing errors */ }
 
         // Sanitize sensitive fields
         const safeName = escapeHtml(entry.name || 'Anonym');
-        const safeDiff = escapeHtml(entry.difficulty || '-');
+        // 'difficulty' contains the animal name (e.g. "Fuchs")
+        // We want to show the icon instead.
+        const animalName = entry.difficulty || '-';
+        const animalIcon = getAnimalEmoji(animalName);
+
+        // We still sanitize the name if it fell back to text, just in case
+        const safeOpponent = (animalIcon === animalName) ? escapeHtml(animalName) : animalIcon;
+
         const safeScore = escapeHtml(entry.score);
         const safeMoves = escapeHtml(entry.moves || '-');
         const safeDate = escapeHtml(dateStr);
 
         return `
             <tr>
-                <td class="${rankClass}">#${rank}</td>
+                <td class="${rankClass}" style="font-size: 1.1em;">${rankDisplay}</td>
                 <td style="font-weight: 500">${safeName}</td>
-                <td>${safeDiff}</td>
+                <td title="${escapeHtml(animalName)}" style="font-size: 1.5em;">${safeOpponent}</td>
                 <td style="font-weight: bold">${safeScore}</td>
                 <td style="color: #6b7280">${safeMoves}</td>
                 <td style="font-size: 0.85em; color: #9ca3af">${safeDate}</td>
