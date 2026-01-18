@@ -969,6 +969,7 @@ body {
 /* Leaderboard Filter Bar */
 .leaderboard-filter {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: 12px;
     margin-bottom: 16px;
@@ -976,6 +977,23 @@ body {
     background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
     border-radius: 10px;
     border: 1px solid #bae6fd;
+}
+
+/* Mobile: stack filters vertically */
+@media (max-width: 480px) {
+    .leaderboard-filter {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+    
+    .leaderboard-filter label {
+        margin-bottom: -6px;
+    }
+    
+    .filter-select {
+        width: 100%;
+    }
 }
 
 .leaderboard-filter label {
