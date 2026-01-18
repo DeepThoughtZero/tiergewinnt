@@ -4,9 +4,9 @@
  */
 
 class GameState {
-    constructor() {
-        this.ROWS = 6;
-        this.COLS = 7;
+    constructor(rows = 6, cols = 7) {
+        this.ROWS = rows;
+        this.COLS = cols;
         this.EMPTY = 0;
         this.PLAYER = 1;
         this.AI = 2;
@@ -14,7 +14,7 @@ class GameState {
     }
 
     reset() {
-        // Create empty 7x6 board (column-major for easy drop)
+        // Create empty board (column-major for easy drop)
         this.board = Array(this.COLS).fill(null).map(() => Array(this.ROWS).fill(this.EMPTY));
         this.currentPlayer = this.PLAYER;
         this.gameOver = false;
@@ -24,7 +24,7 @@ class GameState {
     }
 
     clone() {
-        const copy = new GameState();
+        const copy = new GameState(this.ROWS, this.COLS);
         copy.board = this.board.map(col => [...col]);
         copy.currentPlayer = this.currentPlayer;
         copy.gameOver = this.gameOver;
@@ -134,7 +134,7 @@ class GameState {
         if (this.gameOver) return 0; // Draw
 
         let score = 0;
-        
+
         // Center column preference
         const centerCol = Math.floor(this.COLS / 2);
         for (let row = 0; row < this.ROWS; row++) {

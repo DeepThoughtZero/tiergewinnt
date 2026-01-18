@@ -30,6 +30,17 @@
             <h2>Wähle deinen Gegner</h2>
             <div id="animal-select"></div>
             <div id="animal-info"></div>
+
+            <!-- Mode Selection -->
+            <div class="mode-selection">
+                <label for="board-mode">
+                    <span class="mode-label">Spielmodus:</span>
+                </label>
+                <select id="board-mode" class="mode-select">
+                    <option value="normal">Normal (7×6)</option>
+                    <option value="profi">🔥 Profi (8×7)</option>
+                </select>
+            </div>
         </section>
 
         <!-- Game Area -->
@@ -81,6 +92,29 @@
             <div id="name-input-section" class="name-input-container hidden">
                 <input type="text" id="player-name-input" class="name-input" placeholder="Dein Name" maxlength="20">
                 <button id="save-score-btn" class="save-btn">Speichern</button>
+            </div>
+
+            <!-- Filter Bar -->
+            <div class="leaderboard-filter">
+                <label for="opponent-filter">🔍 Gegner:</label>
+                <select id="opponent-filter" class="filter-select">
+                    <option value="">Alle</option>
+                    <option value="🐌">🐌 Schnecke</option>
+                    <option value="🐢">🐢 Schildkröte</option>
+                    <option value="🐰">🐰 Hase</option>
+                    <option value="🐱">🐱 Katze</option>
+                    <option value="🦊">🦊 Fuchs</option>
+                    <option value="🐺">🐺 Wolf</option>
+                    <option value="🦉">🦉 Eule</option>
+                    <option value="🐉">🐉 Drache</option>
+                </select>
+
+                <label for="mode-filter">🎮 Modus:</label>
+                <select id="mode-filter" class="filter-select">
+                    <option value="">Alle</option>
+                    <option value="normal">Normal</option>
+                    <option value="profi">🔥 Profi</option>
+                </select>
             </div>
 
             <!-- Leaderboard Table -->

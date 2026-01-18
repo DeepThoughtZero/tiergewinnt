@@ -133,6 +133,30 @@
             width: 80px;
         }
 
+        .profi-toggle {
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.2), rgba(255, 142, 83, 0.2));
+            padding: 10px 16px;
+            border-radius: 10px;
+            border: 2px solid #ff6b6b;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .profi-toggle:hover {
+            border-color: #ffaa55;
+            box-shadow: 0 0 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .profi-toggle input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .profi-toggle span {
+            font-weight: 600;
+        }
+
         .arena {
             display: grid;
             grid-template-columns: 1fr 300px;
@@ -285,7 +309,7 @@
             <div class="fighter-select">
                 <h3>🟡 Kämpfer 1 (Gelb)</h3>
                 <select id="fighter1">
-                    <option value="snail" selected>🐌 Schnecke (MCTS 50)</option>
+                    <option value="snail" selected>🐌 Schnecke (MCTS 10)</option>
                     <option value="turtle">🐢 Schildkröte (MCTS 100)</option>
                     <option value="rabbit">🐰 Hase (MCTS 200)</option>
                     <option value="cat">🐱 Katze (MCTS 500)</option>
@@ -299,7 +323,7 @@
             <div class="fighter-select">
                 <h3>🔴 Kämpfer 2 (Rot)</h3>
                 <select id="fighter2">
-                    <option value="snail">🐌 Schnecke (MCTS 50)</option>
+                    <option value="snail">🐌 Schnecke (MCTS 10)</option>
                     <option value="turtle" selected>🐢 Schildkröte (MCTS 100)</option>
                     <option value="rabbit">🐰 Hase (MCTS 200)</option>
                     <option value="cat">🐱 Katze (MCTS 500)</option>
@@ -319,6 +343,10 @@
             <label>
                 Verzögerung (ms):
                 <input type="number" id="delay" value="50" min="0" max="1000">
+            </label>
+            <label class="profi-toggle">
+                <input type="checkbox" id="profiMode">
+                <span>🔥 Profi-Modus (8×7)</span>
             </label>
         </div>
 
@@ -381,12 +409,23 @@
         let running = false;
         let stats = { wins1: 0, wins2: 0, draws: 0, totalMoves: 0, totalTime: 0 };
 
+        function isProfiMode() {
+            return document.getElementById('profiMode').checked;
+        }
+
+        function getBoardDimensions() {
+            return isProfiMode() ? { rows: 7, cols: 8 } : { rows: 6, cols: 7 };
+        }
+
         function initBoard() {
             const board = document.getElementById('board');
+            const { rows, cols } = getBoardDimensions();
             board.innerHTML = '';
-            // Render from top to bottom (row 5 to 0)
-            for (let row = 5; row >= 0; row--) {
-                for (let col = 0; col < 7; col++) {
+            board.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+
+            // Render from top to bottom
+            for (let row = rows - 1; row >= 0; row--) {
+                for (let col = 0; col < cols; col++) {
                     const cell = document.createElement('div');
                     cell.className = 'mini-cell';
                     cell.id = `cell-${col}-${row}`;
@@ -396,8 +435,9 @@
         }
 
         function updateBoard(gameState) {
-            for (let col = 0; col < 7; col++) {
-                for (let row = 0; row < 6; row++) {
+            const { rows, cols } = getBoardDimensions();
+            for (let col = 0; col < cols; col++) {
+                for (let row = 0; row < rows; row++) {
                     const cell = document.getElementById(`cell-${col}-${row}`);
                     cell.className = 'mini-cell';
                     const value = gameState.getCell(col, row);
@@ -430,7 +470,8 @@
         }
 
         async function playGame(ai1, ai2, delay) {
-            const game = new GameState();
+            const { rows, cols } = getBoardDimensions();
+            const game = new GameState(rows, cols);
             const startTime = performance.now();
 
             while (!game.gameOver && running) {
@@ -560,7 +601,8 @@
                         if (actualWinner === 1) w1++;
                         else if (actualWinner === 2) w2++;
                         else d++;
-                        updateBoard(new GameState()); // Clear
+                        const { rows, cols } = getBoardDimensions();
+                        updateBoard(new GameState(rows, cols)); // Clear
                         await sleep(1);
                     }
 

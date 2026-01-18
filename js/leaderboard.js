@@ -9,6 +9,52 @@ const LEADERBOARD_CONFIG = {
     sheet: 'TierGewinnt_Leaderboard'
 };
 
+// Cache for all leaderboard entries (for filtering)
+let allLeaderboardEntries = [];
+
+// Initialize filter listeners on DOM ready
+document.addEventListener('DOMContentLoaded', () => {
+    const opponentFilter = document.getElementById('opponent-filter');
+    const modeFilter = document.getElementById('mode-filter');
+
+    const applyFilters = () => {
+        const opponentValue = opponentFilter ? opponentFilter.value : '';
+        const modeValue = modeFilter ? modeFilter.value : '';
+        filterAndRenderLeaderboard(opponentValue, modeValue);
+    };
+
+    if (opponentFilter) opponentFilter.addEventListener('change', applyFilters);
+    if (modeFilter) modeFilter.addEventListener('change', applyFilters);
+});
+
+/**
+ * Filter and re-render leaderboard based on selected filters
+ * @param {string} filterEmoji - Emoji to filter by, or empty string for all
+ * @param {string} filterMode - 'normal', 'profi', or empty for all
+ */
+function filterAndRenderLeaderboard(filterEmoji, filterMode) {
+    let filtered = allLeaderboardEntries;
+
+    // Filter by opponent
+    if (filterEmoji) {
+        filtered = filtered.filter(entry => {
+            const difficultyRaw = entry.difficulty || '';
+            const animalName = difficultyRaw.replace(' Profi', '').trim();
+            const entryEmoji = getAnimalEmoji(animalName);
+            return entryEmoji === filterEmoji;
+        });
+    }
+
+    // Filter by mode
+    if (filterMode === 'profi') {
+        filtered = filtered.filter(entry => (entry.difficulty || '').includes('Profi'));
+    } else if (filterMode === 'normal') {
+        filtered = filtered.filter(entry => !(entry.difficulty || '').includes('Profi'));
+    }
+
+    renderLeaderboard(filtered);
+}
+
 /**
  * Load leaderboard entries from the backend
  * @returns {Promise<Array>} List of leaderboard entries
@@ -18,7 +64,18 @@ async function loadLeaderboard() {
         const url = `${LEADERBOARD_CONFIG.url}?sheet=${LEADERBOARD_CONFIG.sheet}`;
         const response = await fetch(url);
         const data = await response.json();
-        return data.entries || [];
+        const entries = data.entries || [];
+
+        // Store in cache for filtering
+        allLeaderboardEntries = entries;
+
+        // Reset filters to "All" when loading fresh data
+        const opponentFilter = document.getElementById('opponent-filter');
+        const modeFilter = document.getElementById('mode-filter');
+        if (opponentFilter) opponentFilter.value = '';
+        if (modeFilter) modeFilter.value = '';
+
+        return entries;
     } catch (error) {
         console.error("Fehler beim Laden der Bestenliste:", error);
         return [];
@@ -163,13 +220,22 @@ function renderLeaderboard(entries) {
 
         // Sanitize sensitive fields
         const safeName = escapeHtml(entry.name || 'Anonym');
-        // 'difficulty' contains the animal name (e.g. "Fuchs")
-        // We want to show the icon instead.
-        const animalName = entry.difficulty || '-';
+
+        // 'difficulty' contains the animal name (e.g. "Fuchs" or "Fuchs Profi")
+        // Check if it's a Profi entry
+        const difficultyRaw = entry.difficulty || '-';
+        const isProfi = difficultyRaw.includes('Profi');
+        const animalName = difficultyRaw.replace(' Profi', '').trim();
         const animalIcon = getAnimalEmoji(animalName);
 
+        // Build opponent display: animal icon + flame if Profi
+        let opponentDisplay = animalIcon;
+        if (isProfi) {
+            opponentDisplay = `${animalIcon}<span class="profi-flame" title="Profi-Modus">🔥</span>`;
+        }
+
         // We still sanitize the name if it fell back to text, just in case
-        const safeOpponent = (animalIcon === animalName) ? escapeHtml(animalName) : animalIcon;
+        const safeOpponentTitle = escapeHtml(animalName) + (isProfi ? ' (Profi)' : '');
 
         const safeScore = escapeHtml(entry.score);
         const safeMoves = escapeHtml(entry.moves || '-');
@@ -179,7 +245,7 @@ function renderLeaderboard(entries) {
             <tr>
                 <td class="${rankClass}" style="font-size: 1.1em;">${rankDisplay}</td>
                 <td style="font-weight: 500">${safeName}</td>
-                <td title="${escapeHtml(animalName)}" style="font-size: 1.5em;">${safeOpponent}</td>
+                <td title="${safeOpponentTitle}" style="font-size: 1.5em;">${opponentDisplay}</td>
                 <td style="font-weight: bold">${safeScore}</td>
                 <td style="color: #6b7280">${safeMoves}</td>
                 <td style="font-size: 0.85em; color: #9ca3af">${safeDate}</td>

@@ -12,8 +12,11 @@ class GameUI {
         this.isAIThinking = false;
         this.animationInProgress = false;
         this.lastAiMessage = '';
-
         this.initElements();
+
+        // Read initial mode from dropdown (in case browser preserved selection)
+        this.isProfiMode = this.boardModeSelect?.value === 'profi';
+
         this.initEventListeners();
         this.initLeaderboardListeners();
         this.renderAnimalSelection();
@@ -41,6 +44,7 @@ class GameUI {
         this.playerNameInput = document.getElementById('player-name-input');
         this.nameInputSection = document.getElementById('name-input-section');
         this.gameStatusEl = document.getElementById('game-status');
+        this.boardModeSelect = document.getElementById('board-mode');
     }
 
     // Calculate column position for drop animation
@@ -121,6 +125,13 @@ class GameUI {
     initEventListeners() {
         this.restartBtn.addEventListener('click', () => {
             this.sounds.playClick();
+            this.restartGame();
+        });
+
+        // Mode selection listener
+        this.boardModeSelect.addEventListener('change', (e) => {
+            this.sounds.playClick();
+            this.isProfiMode = e.target.value === 'profi';
             this.restartGame();
         });
 
@@ -255,8 +266,17 @@ class GameUI {
             return;
         }
 
-        this.game.reset();
-        this.renderBoard();
+        // Read mode directly from dropdown to ensure it's current
+        const isProfi = this.boardModeSelect?.value === 'profi';
+        this.isProfiMode = isProfi;
+
+        // Create new game with correct dimensions based on mode
+        if (isProfi) {
+            this.game = new GameState(7, 8); // 7 rows, 8 columns for Profi
+        } else {
+            this.game = new GameState(6, 7); // 6 rows, 7 columns for Normal
+        }
+
         this.renderBoard();
         this.updateStatus('Dein Zug! Klicke auf eine Spalte.', 'start');
     }
@@ -264,13 +284,16 @@ class GameUI {
     renderBoard() {
         this.boardEl.innerHTML = '';
 
+        // Update CSS grid for correct column count
+        this.boardEl.style.gridTemplateColumns = `repeat(${this.game.COLS}, 1fr)`;
+
         // Create column containers for click handling
         for (let col = 0; col < this.game.COLS; col++) {
             const colEl = document.createElement('div');
             colEl.className = 'board-column';
             colEl.dataset.col = col;
 
-            // Render cells from top to bottom (row 5 to 0)
+            // Render cells from top to bottom (dynamic rows)
             for (let row = this.game.ROWS - 1; row >= 0; row--) {
                 const cell = document.createElement('div');
                 cell.className = 'cell';
@@ -544,15 +567,23 @@ class GameUI {
         // Slow win (20 moves) => 20 - 20 = 0 bonus.
         const moveBonus = Math.max(0, 20 - playerMoves);
 
-        const score = animalBaseScore + moveBonus;
+        // Profi mode bonus: +20 points
+        const profiBonus = this.isProfiMode ? 20 : 0;
 
-        // Use animal name as difficulty label (e.g. "Fuchs")
-        const difficultyLabel = this.currentAnimal.name;
+        const score = animalBaseScore + moveBonus + profiBonus;
+
+        // Use animal name as difficulty label, add "Profi" suffix if in Profi mode
+        const difficultyLabel = this.isProfiMode
+            ? `${this.currentAnimal.name} Profi`
+            : this.currentAnimal.name;
 
         this.currentWinData = { score, moves: playerMoves, difficulty: difficultyLabel };
 
         // Detail string for UI
-        const calcDetails = `Basis (${this.currentAnimal.name}): ${animalBaseScore} + Zügebonus: ${moveBonus}`;
+        let calcDetails = `Basis (${this.currentAnimal.name}): ${animalBaseScore} + Zügebonus: ${moveBonus}`;
+        if (this.isProfiMode) {
+            calcDetails += ` + 🔥 Profi-Bonus: ${profiBonus}`;
+        }
 
         // Show Visualizer with details
         showScoreVisualization(difficultyLabel, playerMoves, score, calcDetails);
