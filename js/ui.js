@@ -556,7 +556,7 @@ class GameUI {
             'fox': 60,
             'wolf': 80,
             'owl': 100,
-            'dragon': 150
+            'dragon': 120
         };
 
         const animalBaseScore = ANIMAL_SCORES[this.currentAnimal.id] || 10;
