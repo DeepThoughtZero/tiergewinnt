@@ -979,20 +979,27 @@ body {
     border: 1px solid #bae6fd;
 }
 
-/* Mobile: stack filters vertically */
+/* Filter groups keep label+select together */
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Mobile: stack filter groups vertically */
 @media (max-width: 480px) {
     .leaderboard-filter {
         flex-direction: column;
         align-items: stretch;
         gap: 10px;
     }
-    
-    .leaderboard-filter label {
-        margin-bottom: -6px;
-    }
-    
-    .filter-select {
+
+    .filter-group {
         width: 100%;
+    }
+
+    .filter-select {
+        flex: 1;
     }
 }
 
@@ -1025,6 +1032,7 @@ body {
 /* Name Input Styles inside Modal */
 .name-input-container {
     display: flex;
+    flex-wrap: wrap;
     gap: 10px;
     margin-bottom: 20px;
     padding: 20px;
@@ -1035,6 +1043,7 @@ body {
 
 .name-input {
     flex: 1;
+    min-width: 150px;
     padding: 10px 15px;
     border: 1px solid #cbd5e1;
     border-radius: 8px;
@@ -1042,18 +1051,59 @@ body {
 }
 
 .save-btn {
-    padding: 10px 20px;
-    background: var(--primary);
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #10b981, #059669);
     color: white;
     border: none;
     border-radius: 8px;
-    font-weight: 600;
+    font-weight: 700;
+    font-size: 1rem;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s;
+    animation: breathe 2s ease-in-out infinite;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+}
+
+@keyframes breathe {
+
+    0%,
+    100% {
+        transform: scale(1);
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+    }
+
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 6px 20px rgba(16, 185, 129, 0.6);
+    }
 }
 
 .save-btn:hover {
-    background: var(--primary-dark);
+    animation: none;
+    transform: scale(1.08);
+    box-shadow: 0 6px 25px rgba(16, 185, 129, 0.7);
+}
+
+.save-btn:disabled {
+    animation: none;
+    background: #9ca3af;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* Mobile: Stack input and button vertically */
+@media (max-width: 480px) {
+    .name-input-container {
+        flex-direction: column;
+    }
+
+    .name-input {
+        width: 100%;
+    }
+
+    .save-btn {
+        width: 100%;
+    }
 }
 
 .hidden {
