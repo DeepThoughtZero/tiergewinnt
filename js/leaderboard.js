@@ -5,7 +5,7 @@
 
 const LEADERBOARD_CONFIG = {
     // URL for the Google Apps Script Web App
-    url: 'https://script.google.com/macros/s/AKfycbygxujHfKSMKsM0bxsHdUnZ5tmzUAi2XK_VYDBOldt9UC-OZLDly9VQpF0wRynP4j2o/exec',
+    url: 'https://script.google.com/macros/s/AKfycbxsiA6sGvHUupZTgYirJaurygBdG3cqvGS2JU3ib5vg6UGLc4vqoYs3vXxcHw5__BbX/exec',
     sheet: 'TierGewinnt_Leaderboard'
 };
 
