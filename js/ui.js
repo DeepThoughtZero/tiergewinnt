@@ -579,6 +579,9 @@ class GameUI {
 
         this.currentWinData = { score, moves: playerMoves, difficulty: difficultyLabel };
 
+        // Log score calculation for debugging
+        console.log(`[Score] ${this.currentAnimal.name} | Base: ${animalBaseScore} + Moves: ${moveBonus} + Profi: ${profiBonus} = ${score}`);
+
         // Detail string for UI
         let calcDetails = `Basis (${this.currentAnimal.name}): ${animalBaseScore} + Zügebonus: ${moveBonus}`;
         if (this.isProfiMode) {

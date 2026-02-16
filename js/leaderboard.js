@@ -5,7 +5,7 @@
 
 const LEADERBOARD_CONFIG = {
     // URL for the Google Apps Script Web App
-    url: 'https://script.google.com/macros/s/AKfycbxsiA6sGvHUupZTgYirJaurygBdG3cqvGS2JU3ib5vg6UGLc4vqoYs3vXxcHw5__BbX/exec',
+    url: 'https://script.google.com/macros/s/AKfycbwB1gMZsFcor9JrROUwNKOhJCTfHZ47uYSvPPAaaji1ikJ9YEnuQXWG0MqCPmjkL3uW/exec',
     sheet: 'TierGewinnt_Leaderboard'
 };
 
@@ -100,12 +100,32 @@ async function saveHighscore(name, score, moves, difficulty) {
         difficulty: difficulty
     });
 
+    const fullUrl = `${LEADERBOARD_CONFIG.url}?${params}`;
+    console.log('[Leaderboard] Sende Score:', score, 'für', name, '| Difficulty:', difficulty);
+    console.log('[Leaderboard] URL:', fullUrl);
+
     try {
-        // Using GET as requested for simpler Apps Script handling
-        await fetch(`${LEADERBOARD_CONFIG.url}?${params}`, {
+        await fetch(fullUrl, {
             method: 'GET',
             mode: 'cors'
         });
+
+        // Verify: Reload leaderboard and check if the score was stored correctly
+        try {
+            const verifyUrl = `${LEADERBOARD_CONFIG.url}?sheet=${LEADERBOARD_CONFIG.sheet}`;
+            const verifyResp = await fetch(verifyUrl);
+            const verifyData = await verifyResp.json();
+            const entries = verifyData.entries || [];
+            // Find the most recent entry matching this name and difficulty
+            const match = entries.find(e => e.name === name && e.difficulty === difficulty && Number(e.score) !== Number(score));
+            if (match) {
+                console.warn(`[Leaderboard] ⚠️ SCORE MISMATCH! Gesendet: ${score}, Gespeichert: ${match.score}`);
+                alert(`⚠️ Score-Fehler erkannt!\n\nGesendet: ${score}\nGespeichert: ${match.score}\n\nDas Google Apps Script begrenzt den Score vermutlich noch.\nBitte erstelle eine NEUE Bereitstellung im Apps Script Editor:\nBereitstellen → Bereitstellungen verwalten → Bearbeiten → Version: "Neue Version" → Bereitstellen`);
+            }
+        } catch (verifyErr) {
+            console.warn('[Leaderboard] Verifikation fehlgeschlagen:', verifyErr);
+        }
+
         return true;
     } catch (error) {
         console.error("Fehler beim Speichern:", error);

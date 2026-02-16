@@ -2,6 +2,8 @@
 
 # 🐾 Tier Gewinnt 🔴🟡
 
+![Tier Gewinnt Preview](TierGewinntPreview.png)
+
 ### 🚀 [HIER KLICKEN UND DIREKT LOSSPIELEN!](https://deepthoughtzero.github.io/tiergewinnt/) 🚀
 
 **Sofort im Browser starten** • **Keine Installation nötig** • **Einfach Link teilen**
@@ -52,7 +54,7 @@ Nach jedem Sieg kannst du deinen Score in der **Online-Bestenliste** speichern!
 ### Score-Berechnung
 | Komponente | Punkte |
 |------------|--------|
-| Tier-Bonus | 10-80 (je nach Gegner-Stärke) |
+| Tier-Bonus | 10-120 (je nach Gegner-Stärke) |
 | Züge-Bonus | max. 20 (weniger Züge = mehr Punkte) |
 | Profi-Bonus | +20 (nur im Profi-Modus) |
 
