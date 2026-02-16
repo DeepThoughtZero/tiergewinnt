@@ -5,10 +5,14 @@
 
 // Zobrist hash table (initialized once, shared across all GameState instances)
 const ZobristTable = {
-    _initialized: false,
+    _maxCols: 0,
+    _maxRows: 0,
     table: null,  // [col][row][player] -> random 32-bit int
-    init(maxCols, maxRows) {
-        if (this._initialized) return;
+    init(cols, rows) {
+        // Re-initialize if board is larger than current table
+        if (cols <= this._maxCols && rows <= this._maxRows) return;
+        const maxCols = Math.max(cols, this._maxCols);
+        const maxRows = Math.max(rows, this._maxRows);
         this.table = [];
         for (let col = 0; col < maxCols; col++) {
             this.table[col] = [];
@@ -19,7 +23,8 @@ const ZobristTable = {
                 }
             }
         }
-        this._initialized = true;
+        this._maxCols = maxCols;
+        this._maxRows = maxRows;
     }
 };
 
