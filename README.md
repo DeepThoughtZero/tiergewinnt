@@ -80,10 +80,37 @@ python3 -m http.server 8080
 2. **Zug machen** - Klicke auf eine Spalte um einen Chip einzuwerfen
 3. **Gewinnen** - Verbinde 4 Chips horizontal, vertikal oder diagonal!
 
+## KI-Algorithmen
+
+### 🎲 Monte Carlo Tree Search (MCTS)
+Wird von Schnecke, Schildkröte, Hase und Katze verwendet. Der Algorithmus simuliert zufällige Partien ab der aktuellen Stellung und bewertet Züge statistisch. Mehr Iterationen = bessere Einschätzung.
+
+- **Selection**: Beste Knoten per UCB1-Formel auswählen (Balance Exploration/Exploitation)
+- **Expansion**: Neuen Kindknoten hinzufügen
+- **Simulation**: Zufällige Partie bis zum Ende durchspielen (Rollout)
+- **Backpropagation**: Ergebnis zurück durch den Baum propagieren
+
+### ♟️ Alpha-Beta Pruning (Minimax)
+Wird von Fuchs, Wolf, Eule und Drache verwendet. Durchsucht den Spielbaum systematisch und bewertet alle möglichen Zugfolgen bis zur eingestellten Tiefe (in Halbzügen).
+
+**Optimierungen:**
+- **Transposition Table** — Bereits bewertete Stellungen werden per Zobrist-Hash zwischengespeichert. Gleiche Positionen (über verschiedene Zugfolgen erreicht) werden nicht erneut berechnet.
+- **Zobrist Hashing** — Inkrementeller Board-Hash per XOR-Operation. Wird bei jedem Zug/Rückzug in O(1) aktualisiert.
+- **Undo-Move** — Statt das Board bei jedem Knoten zu klonen, wird der Zug nach der Bewertung rückgängig gemacht. Eliminiert hunderttausende Objekt-Allokierungen.
+- **Killer-Move Heuristik** — Züge, die in Geschwister-Knoten einen Cutoff verursacht haben, werden priorisiert. Verbessert die Pruning-Effizienz erheblich.
+- **Move Ordering** — Mittelspalten werden zuerst probiert (strategisch wertvoller in Vier Gewinnt).
+
+**Stellungsbewertung:**
+- Mittelspalten-Präferenz (+3 pro eigenem Stein in der Mitte)
+- Fenster-Bewertung aller 4er-Linien (horizontal, vertikal, diagonal)
+- 3 eigene + 1 leer = +50, 2 eigene + 2 leer = +10 (symmetrisch für Gegner)
+- Leichter Zufallsfaktor: bei annähernd gleichwertigen Zügen wird zufällig gewählt
+
 ## Technologie
 
 - Vanilla JavaScript (ES6)
 - CSS Grid & Flexbox
 - Web Audio API (Prozedurale Sounds)
 - Monte Carlo Tree Search (MCTS) mit UCB1
-- Minimax Algorithmus mit Alpha-Beta Pruning
+- Minimax mit Alpha-Beta Pruning, Transposition Table & Killer Moves
+
